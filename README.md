@@ -22,17 +22,17 @@ npm run dev
 
 ## Publicando no GitHub Pages
 
-Este projeto inclui um workflow em `.github/workflows/deploy-pages.yml` que compila o Vite e publica a pasta `dist` no GitHub Pages.
+Este projeto inclui um workflow em `.github/workflows/deploy-pages.yml` que compila o Vite e publica a pasta `dist` na branch `gh-pages`.
 
 1. No GitHub, abra **Settings > Pages**.
-2. Em **Build and deployment**, selecione **GitHub Actions**.
-3. Faça push para `work` ou `main` ou execute o workflow manualmente.
+2. Em **Build and deployment**, selecione **Deploy from a branch**.
+3. Em **Branch**, selecione `gh-pages` e a pasta `/ (root)`.
+4. Faça push para `work` ou `main` ou execute o workflow manualmente.
 
-A aplicação usa `HashRouter` e um `404.html` de fallback para evitar erro 404 ao abrir ou recarregar rotas internas no GitHub Pages.
-
-Se o GitHub Pages ainda estiver configurado como **Deploy from a branch** usando a pasta `/docs`, a pasta `docs/` deste repositório evita a falha de Jekyll `No such file or directory @ dir_chdir - /github/workspace/docs`. Mesmo assim, para publicar o app React completo, use **GitHub Actions** como fonte do Pages.
+A aplicação usa `HashRouter`, caminhos relativos no Vite (`base: "./"`) e `.nojekyll` no build para evitar página em branco por assets não encontrados e para impedir processamento Jekyll dos arquivos gerados.
 
 ### Solução de problemas
 
-- Se o deploy falhar com `Multiple artifacts named "github-pages"`, execute novamente após atualizar este workflow: ele publica o artifact com o nome exclusivo `studyquest-pages`, evitando conflito com artifacts criados automaticamente pelo Pages.
-- Se a página publicada ficar em branco, confira se **Settings > Pages > Build and deployment > Source** está como **GitHub Actions**. A aplicação Vite agora usa caminhos relativos (`base: "./"`) para carregar os assets corretamente tanto em URLs de projeto (`/estudos/`) quanto em previews.
+- Se aparecer `Multiple artifacts named "github-pages"`, o deploy antigo via `actions/deploy-pages` ainda está sendo reexecutado. Este workflow não usa mais artifacts do GitHub Pages; ele publica direto na branch `gh-pages`. Rode o workflow mais recente e configure o Pages para **Deploy from a branch > gh-pages > / (root)**.
+- Se a página publicada ficar em branco, limpe o cache do navegador e confirme que a URL está usando a publicação da branch `gh-pages`, não uma execução antiga do Pages por GitHub Actions ou `/docs`.
+- A pasta `docs/` fica apenas como fallback para configurações antigas que apontem para `/docs`; o app React completo é publicado pela branch `gh-pages`.
