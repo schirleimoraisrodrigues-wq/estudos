@@ -32,6 +32,6 @@ A aplicação usa `HashRouter`, caminhos relativos no Vite (`base: "./"`) e `.no
 
 ### Solução de problemas
 
-- Se aparecer `Multiple artifacts named "github-pages"`, execute o workflow mais recente. Ele remove artifacts `github-pages` antigos do mesmo run antes de enviar o novo artifact, evitando conflito no `actions/deploy-pages@v5`.
+- Se aparecer `Multiple artifacts named "github-pages"`, execute o workflow mais recente. Ele remove artifacts `github-pages` antigos antes do upload e também mantém apenas o artifact mais recente imediatamente antes do deploy, evitando conflito no `actions/deploy-pages@v5` mesmo quando você reexecuta apenas o job de deploy.
 - Se a página publicada ficar em branco ou mostrar 404, confirme que **Settings > Pages > Build and deployment > Source** está como **GitHub Actions** e aguarde o workflow terminar com sucesso.
 - A pasta `docs/` fica apenas como fallback para configurações antigas que apontem para `/docs`; o app React completo é publicado pelo workflow do GitHub Actions.

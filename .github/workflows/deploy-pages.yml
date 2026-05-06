@@ -59,6 +59,27 @@ jobs:
     runs-on: ubuntu-latest
     needs: build
     steps:
+      - name: Keep only the newest Pages artifact
+        uses: actions/github-script@v7
+        with:
+          script: |
+            const artifacts = await github.paginate(github.rest.actions.listWorkflowRunArtifacts, {
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              run_id: context.runId,
+            });
+            const pagesArtifacts = artifacts
+              .filter((item) => item.name === 'github-pages')
+              .sort((a, b) => new Date(b.created_at) - new Date(a.created_at));
+            core.info(`Found ${pagesArtifacts.length} github-pages artifact(s) before deploy`);
+            for (const artifact of pagesArtifacts.slice(1)) {
+              core.info(`Deleting duplicate artifact ${artifact.name} (${artifact.id}) from ${artifact.created_at}`);
+              await github.rest.actions.deleteArtifact({
+                owner: context.repo.owner,
+                repo: context.repo.repo,
+                artifact_id: artifact.id,
+              });
+            }
       - name: Deploy to GitHub Pages
         id: deployment
         uses: actions/deploy-pages@v5
