@@ -20,6 +20,8 @@ npm install
 npm run dev
 ```
 
+Se o seu terminal tiver variáveis de proxy inválidas e o `npm install` retornar `403 Forbidden`, limpe `HTTP_PROXY`, `HTTPS_PROXY`, `npm_config_http_proxy` e `npm_config_https_proxy` antes de rodar o comando. O projeto também inclui `.npmrc` para fixar o registry público do npm no escopo do repositório.
+
 ## Publicando no GitHub Pages
 
 Este projeto inclui um workflow em `.github/workflows/deploy-pages.yml` que compila o Vite, envia um único artifact `github-pages` e publica o app pelo GitHub Pages.
