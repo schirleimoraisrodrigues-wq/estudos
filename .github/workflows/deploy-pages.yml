@@ -6,14 +6,17 @@ on:
   workflow_dispatch:
 
 permissions:
-  contents: write
+  contents: read
+  pages: write
+  id-token: write
+  actions: write
 
 concurrency:
   group: pages
   cancel-in-progress: true
 
 jobs:
-  build-and-deploy:
+  build:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout
@@ -22,14 +25,40 @@ jobs:
         uses: actions/setup-node@v4
         with:
           node-version: 22
+      - name: Configure Pages
+        uses: actions/configure-pages@v5
       - name: Install dependencies
         run: npm install
       - name: Build
         run: npm run build
-      - name: Deploy dist to gh-pages branch
-        uses: peaceiris/actions-gh-pages@v4
+      - name: Remove stale Pages artifacts from this run
+        uses: actions/github-script@v7
         with:
-          github_token: ${{ secrets.GITHUB_TOKEN }}
-          publish_branch: gh-pages
-          publish_dir: ./dist
-          force_orphan: true
+          script: |
+            const artifacts = await github.paginate(github.rest.actions.listWorkflowRunArtifacts, {
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              run_id: context.runId,
+            });
+            for (const artifact of artifacts.filter((item) => item.name === 'github-pages')) {
+              core.info(`Deleting stale artifact ${artifact.name} (${artifact.id}) from this run`);
+              await github.rest.actions.deleteArtifact({
+                owner: context.repo.owner,
+                repo: context.repo.repo,
+                artifact_id: artifact.id,
+              });
+            }
+      - name: Upload Pages artifact
+        uses: actions/upload-pages-artifact@v3
+        with:
+          path: dist
+  deploy:
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    runs-on: ubuntu-latest
+    needs: build
+    steps:
+      - name: Deploy to GitHub Pages
+        id: deployment
+        uses: actions/deploy-pages@v5

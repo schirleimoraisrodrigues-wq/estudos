@@ -22,17 +22,16 @@ npm run dev
 
 ## Publicando no GitHub Pages
 
-Este projeto inclui um workflow em `.github/workflows/deploy-pages.yml` que compila o Vite e publica a pasta `dist` na branch `gh-pages`.
+Este projeto inclui um workflow em `.github/workflows/deploy-pages.yml` que compila o Vite, envia um único artifact `github-pages` e publica o app pelo GitHub Pages.
 
 1. No GitHub, abra **Settings > Pages**.
-2. Em **Build and deployment**, selecione **Deploy from a branch**.
-3. Em **Branch**, selecione `gh-pages` e a pasta `/ (root)`.
-4. Faça push para `work` ou `main` ou execute o workflow manualmente.
+2. Em **Build and deployment**, selecione **GitHub Actions**.
+3. Faça push para `work` ou `main` ou execute o workflow **Deploy StudyQuest to GitHub Pages** manualmente.
 
 A aplicação usa `HashRouter`, caminhos relativos no Vite (`base: "./"`) e `.nojekyll` no build para evitar página em branco por assets não encontrados e para impedir processamento Jekyll dos arquivos gerados.
 
 ### Solução de problemas
 
-- Se aparecer `Multiple artifacts named "github-pages"`, o deploy antigo via `actions/deploy-pages` ainda está sendo reexecutado. Este workflow não usa mais artifacts do GitHub Pages; ele publica direto na branch `gh-pages`. Rode o workflow mais recente e configure o Pages para **Deploy from a branch > gh-pages > / (root)**.
-- Se a página publicada ficar em branco, limpe o cache do navegador e confirme que a URL está usando a publicação da branch `gh-pages`, não uma execução antiga do Pages por GitHub Actions ou `/docs`.
-- A pasta `docs/` fica apenas como fallback para configurações antigas que apontem para `/docs`; o app React completo é publicado pela branch `gh-pages`.
+- Se aparecer `Multiple artifacts named "github-pages"`, execute o workflow mais recente. Ele remove artifacts `github-pages` antigos do mesmo run antes de enviar o novo artifact, evitando conflito no `actions/deploy-pages@v5`.
+- Se a página publicada ficar em branco ou mostrar 404, confirme que **Settings > Pages > Build and deployment > Source** está como **GitHub Actions** e aguarde o workflow terminar com sucesso.
+- A pasta `docs/` fica apenas como fallback para configurações antigas que apontem para `/docs`; o app React completo é publicado pelo workflow do GitHub Actions.
