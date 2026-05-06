@@ -29,3 +29,5 @@ Este projeto inclui um workflow em `.github/workflows/deploy-pages.yml` que comp
 3. Faça push para `work` ou `main` ou execute o workflow manualmente.
 
 A aplicação usa `HashRouter` e um `404.html` de fallback para evitar erro 404 ao abrir ou recarregar rotas internas no GitHub Pages.
+
+Se o GitHub Pages ainda estiver configurado como **Deploy from a branch** usando a pasta `/docs`, a pasta `docs/` deste repositório evita a falha de Jekyll `No such file or directory @ dir_chdir - /github/workspace/docs`. Mesmo assim, para publicar o app React completo, use **GitHub Actions** como fonte do Pages.
