@@ -19,3 +19,13 @@ StudyQuest é uma plataforma pessoal de organização e gamificação de estudos
 npm install
 npm run dev
 ```
+
+## Publicando no GitHub Pages
+
+Este projeto inclui um workflow em `.github/workflows/deploy-pages.yml` que compila o Vite e publica a pasta `dist` no GitHub Pages.
+
+1. No GitHub, abra **Settings > Pages**.
+2. Em **Build and deployment**, selecione **GitHub Actions**.
+3. Faça push para `work` ou `main` ou execute o workflow manualmente.
+
+A aplicação usa `HashRouter` e um `404.html` de fallback para evitar erro 404 ao abrir ou recarregar rotas internas no GitHub Pages.
