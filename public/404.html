@@ -1,0 +1,20 @@
+<!doctype html>
+<html lang="pt-BR">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>StudyQuest</title>
+    <script>
+      const path = window.location.pathname;
+      const repository = path.split("/").filter(Boolean)[0] || "";
+      const base = repository ? `/${repository}/` : "/";
+      const route = path.startsWith(base) ? path.slice(base.length) : "";
+      window.location.replace(
+        `${base}#/${route}${window.location.search}${window.location.hash}`,
+      );
+    </script>
+  </head>
+  <body>
+    <p>Redirecionando para o StudyQuest...</p>
+  </body>
+</html>
